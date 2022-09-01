@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Escola.Entidades;
+using Escola.Repositorios;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading;
@@ -7,6 +9,8 @@ namespace Escola
 {
     internal class Program
     {
+        private static AlunoRepositorio repo = new AlunoRepositorio(new AlunoRepositorioSql());
+        
         static void Main(string[] args)
         {
             while (true)
@@ -43,14 +47,14 @@ namespace Escola
         {
             Console.Clear();
 
-            if (Aluno.Todos().Count == 0)
+            if (repo.Quantidade() == 0)
             {
                 Console.WriteLine("Nenhum aluno cadastrado!");
                 Thread.Sleep(2000);
                 return;
             }
 
-            foreach (var aluno in Aluno.Todos())
+            foreach (var aluno in repo.Todos())
             {
                 Console.WriteLine("------------------------");
                 Console.WriteLine("Nome: " + aluno.Nome);
@@ -87,7 +91,8 @@ namespace Escola
             }
 
             aluno.Notas = listaNotas;
-            Aluno.AddAluno(aluno);
+
+            repo.Salvar(aluno);
 
             Console.Clear();
             Console.WriteLine("Aluno cadastrado com sucesso!");
